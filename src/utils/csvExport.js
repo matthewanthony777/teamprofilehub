@@ -1,13 +1,22 @@
 export const exportToCSV = (employees, skills, education) => {
+  // Safety checks
+  if (!employees || !Array.isArray(employees)) employees = [];
+  if (!skills || !Array.isArray(skills)) skills = [];
+  if (!education || !Array.isArray(education)) education = [];
+
   // Create skill lookup map
   const skillMap = skills.reduce((acc, skill) => {
-    acc[skill.id] = skill.name;
+    if (skill && skill.id && skill.name) {
+      acc[skill.id] = skill.name;
+    }
     return acc;
   }, {});
 
   // Create education lookup map
   const educationMap = education.reduce((acc, edu) => {
-    acc[edu.id] = `${edu.degree} in ${edu.field} from ${edu.institution} (${edu.year})`;
+    if (edu && edu.id && edu.degree && edu.field && edu.institution && edu.year) {
+      acc[edu.id] = `${edu.degree} in ${edu.field} from ${edu.institution} (${edu.year})`;
+    }
     return acc;
   }, {});
 
@@ -29,25 +38,33 @@ export const exportToCSV = (employees, skills, education) => {
 
   // Convert employees to CSV rows
   const rows = employees.map(emp => {
+    if (!emp) return [];
+
     const employeeSkills = (emp.skills || [])
-      .map(s => `${skillMap[s.skillId]} (${s.proficiencyLevel})`)
+      .map(s => {
+        if (!s || !s.skillId) return '';
+        const skillName = skillMap[s.skillId] || 'Unknown Skill';
+        return `${skillName} (${s.proficiencyLevel || 'N/A'})`;
+      })
+      .filter(Boolean)
       .join('; ');
 
     const employeeEducation = (emp.education || [])
-      .map(e => educationMap[e.educationId])
+      .map(e => e && e.educationId ? educationMap[e.educationId] : null)
       .filter(Boolean)
       .join('; ');
 
     const timelineSummary = (emp.careerTimeline || [])
-      .map(t => `${t.period}: ${t.title}`)
+      .map(t => t && t.title ? `${t.period || 'N/A'}: ${t.title}` : null)
+      .filter(Boolean)
       .join(' | ');
 
     return [
-      emp.name,
-      emp.role,
-      emp.department,
-      emp.email,
-      emp.hireDate,
+      emp.name || '',
+      emp.role || '',
+      emp.department || '',
+      emp.email || '',
+      emp.hireDate || '',
       emp.phone || '',
       emp.aboutMe || '',
       employeeSkills,
@@ -61,7 +78,7 @@ export const exportToCSV = (employees, skills, education) => {
   // Combine headers and rows
   const csvContent = [
     headers.join(','),
-    ...rows.map(row => row.map(cell => `"${cell.replace(/"/g, '""')}"`).join(','))
+    ...rows.map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(','))
   ].join('\n');
 
   // Create download link
