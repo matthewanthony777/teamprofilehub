@@ -34,34 +34,41 @@ const EmployeeDetail = () => {
   };
 
   const getSkillName = (skillId) => {
-    const skill = skills.find((s) => s.id === skillId);
+    if (!skills || !Array.isArray(skills)) return 'Unknown';
+    const skill = skills.find((s) => s && s.id === skillId);
     return skill ? skill.name : 'Unknown';
   };
 
   const getEducationDetails = (educationId) => {
-    const edu = education.find((e) => e.id === educationId);
-    return edu;
+    if (!education || !Array.isArray(education)) return null;
+    const edu = education.find((e) => e && e.id === educationId);
+    return edu || null;
   };
 
   // Migrate and sort timeline entries by start date (most recent first)
-  const migratedTimeline = (selectedEmployee.careerTimeline || []).map(migrateTimelineEntry);
+  const migratedTimeline = (selectedEmployee?.careerTimeline || [])
+    .map(migrateTimelineEntry)
+    .filter(entry => entry !== null); // Remove null entries from migration
+
   const sortedTimeline = [...migratedTimeline].sort((a, b) => {
-    const dateA = new Date(a.startDate || '1970-01-01');
-    const dateB = new Date(b.startDate || '1970-01-01');
+    const dateA = new Date(a?.startDate || '1970-01-01');
+    const dateB = new Date(b?.startDate || '1970-01-01');
     return dateB - dateA;
   });
 
   // Calculate overlaps for all timeline entries
-  const timelineOverlaps = calculateOverlaps(migratedTimeline);
+  const timelineOverlaps = calculateOverlaps(migratedTimeline) || {};
 
   // Get initials from name
   const getInitials = (name) => {
+    if (!name || typeof name !== 'string') return '??';
     return name
       .split(' ')
-      .map(part => part[0])
+      .map(part => part && part[0])
+      .filter(Boolean)
       .join('')
       .toUpperCase()
-      .slice(0, 2);
+      .slice(0, 2) || '??';
   };
 
   return (
@@ -164,7 +171,7 @@ const EmployeeDetail = () => {
                 <h3 className="text-xs font-semibold text-gray-600 uppercase tracking-wide">Hire Date</h3>
               </div>
               <p className="text-lg font-medium text-gray-900">
-                {new Date(selectedEmployee.hireDate).toLocaleDateString()}
+                {selectedEmployee?.hireDate ? new Date(selectedEmployee.hireDate).toLocaleDateString() : 'N/A'}
               </p>
             </div>
           </div>
@@ -284,7 +291,7 @@ const EmployeeDetail = () => {
                     Career Timeline ({sortedTimeline.length})
                   </h3>
                 </div>
-                {sortedTimeline.some(e => timelineOverlaps[e.id]?.count > 0) && (
+                {sortedTimeline.some(e => e && e.id && timelineOverlaps[e.id]?.count > 0) && (
                   <span className="text-xs font-medium text-amber-600 bg-amber-50 px-3 py-1 rounded-full border border-amber-200">
                     🔄 Contains concurrent projects
                   </span>
@@ -296,6 +303,7 @@ const EmployeeDetail = () => {
 
                 <div className="space-y-8">
                   {sortedTimeline.map((entry, index) => {
+                    if (!entry || !entry.id) return null; // Skip invalid entries
                     const overlap = timelineOverlaps[entry.id];
                     const statusColor = TIMELINE_STATUS_COLORS[entry.status] || TIMELINE_STATUS_COLORS['Completed'];
                     const duration = calculateDuration(entry.startDate, entry.endDate);
@@ -338,7 +346,7 @@ const EmployeeDetail = () => {
                                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
                                 </svg>
                                 <span className="text-xs font-medium text-amber-800">
-                                  🔄 Concurrent with {overlap.count} other project{overlap.count > 1 ? 's' : ''}: {overlap.entries.map(e => e.title).join(', ')}
+                                  🔄 Concurrent with {overlap.count} other project{overlap.count > 1 ? 's' : ''}: {(overlap.entries || []).map(e => e?.title || 'Untitled').join(', ')}
                                 </span>
                               </div>
                             </div>
@@ -348,11 +356,11 @@ const EmployeeDetail = () => {
                           <div className="text-gray-700 leading-relaxed mb-3">{entry.description}</div>
 
                           {/* Tags */}
-                          {entry.tags && entry.tags.length > 0 && (
+                          {entry.tags && Array.isArray(entry.tags) && entry.tags.length > 0 && (
                             <div className="flex flex-wrap gap-2">
-                              {entry.tags.map(tag => (
+                              {entry.tags.map((tag, tagIndex) => (
                                 <span
-                                  key={tag}
+                                  key={`${entry.id}-tag-${tagIndex}`}
                                   className="px-2 py-1 bg-primary-50 text-primary-700 rounded-full text-xs font-medium border border-primary-200"
                                 >
                                   {tag}

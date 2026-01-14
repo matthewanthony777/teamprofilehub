@@ -9,13 +9,21 @@
  * @returns {boolean} - True if ranges overlap
  */
 export const datesOverlap = (start1, end1, start2, end2) => {
-  const s1 = new Date(start1);
-  const e1 = end1 ? new Date(end1) : new Date(); // If no end date, assume current
-  const s2 = new Date(start2);
-  const e2 = end2 ? new Date(end2) : new Date();
+  // Safety check: return false if required dates are missing
+  if (!start1 || !start2) return false;
 
-  // Check if ranges overlap: start1 <= end2 AND end1 >= start2
-  return s1 <= e2 && e1 >= s2;
+  try {
+    const s1 = new Date(start1);
+    const e1 = end1 ? new Date(end1) : new Date(); // If no end date, assume current
+    const s2 = new Date(start2);
+    const e2 = end2 ? new Date(end2) : new Date();
+
+    // Check if ranges overlap: start1 <= end2 AND end1 >= start2
+    return s1 <= e2 && e1 >= s2;
+  } catch (error) {
+    console.error('Error comparing dates:', error);
+    return false;
+  }
 };
 
 /**
@@ -25,10 +33,12 @@ export const datesOverlap = (start1, end1, start2, end2) => {
  * @returns {Array} - Array of overlapping entries
  */
 export const findOverlappingEntries = (entry, allEntries) => {
-  if (!entry.startDate) return [];
+  // Safety checks
+  if (!entry || !entry.startDate) return [];
+  if (!allEntries || !Array.isArray(allEntries)) return [];
 
   return allEntries.filter(other => {
-    if (other.id === entry.id) return false; // Don't compare with self
+    if (!other || other.id === entry.id) return false; // Don't compare with self
     if (!other.startDate) return false;
 
     return datesOverlap(
@@ -46,9 +56,14 @@ export const findOverlappingEntries = (entry, allEntries) => {
  * @returns {Object} - Map of entry id to overlap count and overlapping entries
  */
 export const calculateOverlaps = (entries) => {
+  // Safety check
+  if (!entries || !Array.isArray(entries)) return {};
+
   const overlaps = {};
 
   entries.forEach(entry => {
+    if (!entry || !entry.id) return; // Skip invalid entries
+
     const overlapping = findOverlappingEntries(entry, entries);
     overlaps[entry.id] = {
       count: overlapping.length,
@@ -139,13 +154,21 @@ export const formatDateRange = (startDate, endDate) => {
 export const calculateDuration = (startDate, endDate) => {
   if (!startDate) return 0;
 
-  const start = new Date(startDate);
-  const end = endDate ? new Date(endDate) : new Date();
+  try {
+    const start = new Date(startDate);
+    const end = endDate ? new Date(endDate) : new Date();
 
-  const months = (end.getFullYear() - start.getFullYear()) * 12 +
-    (end.getMonth() - start.getMonth());
+    // Validate dates
+    if (isNaN(start.getTime()) || isNaN(end.getTime())) return 0;
 
-  return Math.max(1, months); // Minimum 1 month
+    const months = (end.getFullYear() - start.getFullYear()) * 12 +
+      (end.getMonth() - start.getMonth());
+
+    return Math.max(1, months); // Minimum 1 month
+  } catch (error) {
+    console.error('Error calculating duration:', error);
+    return 0;
+  }
 };
 
 /**
@@ -155,6 +178,9 @@ export const calculateDuration = (startDate, endDate) => {
  * @returns {Object} - Migrated entry
  */
 export const migrateTimelineEntry = (entry) => {
+  // Safety check
+  if (!entry) return null;
+
   // If entry already has startDate, return as-is
   if (entry.startDate) {
     return {
@@ -166,23 +192,28 @@ export const migrateTimelineEntry = (entry) => {
 
   // If entry has old "period" format, try to parse it
   if (entry.period) {
-    // Try to extract dates from period string
-    // This is a best-effort migration
-    const periodLower = entry.period.toLowerCase();
+    try {
+      // Try to extract dates from period string
+      // This is a best-effort migration
+      const periodLower = entry.period.toLowerCase();
 
-    // Default to 3 months ago as start date, present as end date
-    const defaultStart = new Date();
-    defaultStart.setMonth(defaultStart.getMonth() - 3);
+      // Default to 3 months ago as start date, present as end date
+      const defaultStart = new Date();
+      defaultStart.setMonth(defaultStart.getMonth() - 3);
 
-    return {
-      ...entry,
-      startDate: defaultStart.toISOString().split('T')[0],
-      endDate: periodLower.includes('present') || periodLower.includes('current') ? null : new Date().toISOString().split('T')[0],
-      tags: entry.tags || [],
-      status: entry.status || 'Completed',
-      // Keep period for reference
-      period: entry.period
-    };
+      return {
+        ...entry,
+        startDate: defaultStart.toISOString().split('T')[0],
+        endDate: periodLower.includes('present') || periodLower.includes('current') ? null : new Date().toISOString().split('T')[0],
+        tags: entry.tags || [],
+        status: entry.status || 'Completed',
+        // Keep period for reference
+        period: entry.period
+      };
+    } catch (error) {
+      console.error('Error migrating timeline entry:', error);
+      return entry;
+    }
   }
 
   return entry;

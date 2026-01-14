@@ -7,19 +7,25 @@
  * @returns {Array} - Array of { skillId, skillName, category, count } sorted by count (desc)
  */
 export const calculateSkillsDistribution = (employees, skills) => {
+  // Safety checks
+  if (!employees || !Array.isArray(employees)) employees = [];
+  if (!skills || !Array.isArray(skills)) skills = [];
+
   const skillCounts = {};
 
   employees.forEach(emp => {
-    (emp.skills || []).forEach(({ skillId }) => {
-      skillCounts[skillId] = (skillCounts[skillId] || 0) + 1;
+    if (!emp) return; // Skip invalid employees
+    (emp.skills || []).forEach(empSkill => {
+      if (!empSkill || !empSkill.skillId) return; // Skip invalid skills
+      skillCounts[empSkill.skillId] = (skillCounts[empSkill.skillId] || 0) + 1;
     });
   });
 
   return skills.map(skill => ({
-    skillId: skill.id,
-    skillName: skill.name,
-    category: skill.category,
-    count: skillCounts[skill.id] || 0
+    skillId: skill?.id || '',
+    skillName: skill?.name || 'Unknown',
+    category: skill?.category || 'Unknown',
+    count: skillCounts[skill?.id] || 0
   })).sort((a, b) => b.count - a.count);
 };
 
@@ -30,11 +36,18 @@ export const calculateSkillsDistribution = (employees, skills) => {
  * @returns {Array} - Array of { level, count, percentage }
  */
 export const calculateProficiencyDistribution = (employees, proficiencyLevels = ['Beginner', 'Intermediate', 'Advanced', 'Expert']) => {
+  // Safety checks
+  if (!employees || !Array.isArray(employees)) employees = [];
+  if (!proficiencyLevels || !Array.isArray(proficiencyLevels)) proficiencyLevels = ['Beginner', 'Intermediate', 'Advanced', 'Expert'];
+
   const counts = {};
   proficiencyLevels.forEach(level => counts[level] = 0);
 
   employees.forEach(emp => {
-    (emp.skills || []).forEach(({ proficiencyLevel }) => {
+    if (!emp) return; // Skip invalid employees
+    (emp.skills || []).forEach(empSkill => {
+      if (!empSkill) return; // Skip invalid skills
+      const proficiencyLevel = empSkill.proficiencyLevel || empSkill.proficiency;
       if (counts.hasOwnProperty(proficiencyLevel)) {
         counts[proficiencyLevel]++;
       }
@@ -57,10 +70,16 @@ export const calculateProficiencyDistribution = (employees, proficiencyLevels = 
  * @returns {Array} - Array of { category, count }
  */
 export const calculateEducationDistribution = (employees, education) => {
+  // Safety checks
+  if (!employees || !Array.isArray(employees)) employees = [];
+  if (!education || !Array.isArray(education)) education = [];
+
   const levelCounts = {};
 
   employees.forEach(emp => {
+    if (!emp) return; // Skip invalid employees
     (emp.education || []).forEach((edu) => {
+      if (!edu) return; // Skip invalid education entries
       // Support both new structure (inline with level field) and old structure (educationId reference)
       let level = null;
 
@@ -69,7 +88,7 @@ export const calculateEducationDistribution = (employees, education) => {
         level = edu.level;
       } else if (edu.educationId) {
         // Old structure - reference to global education catalog
-        const eduDetails = education.find(e => e.id === edu.educationId);
+        const eduDetails = education.find(e => e && e.id === edu.educationId);
         if (eduDetails && eduDetails.category) {
           level = eduDetails.category;
         }
