@@ -1,5 +1,31 @@
 import { v4 as uuidv4 } from 'uuid';
 
+// Safe helper to get skill ID by name
+const getSkillId = (skills, name) => {
+  const skill = skills.find(s => s && s.name === name);
+  if (!skill || !skill.id) {
+    console.warn(`Skill not found: ${name}`);
+    return null;
+  }
+  return skill.id;
+};
+
+// Safe helper to get education ID by institution
+const getEducationId = (education, institution, degree = null) => {
+  const edu = education.find(e => {
+    if (!e) return false;
+    if (degree) {
+      return e.institution === institution && e.degree === degree;
+    }
+    return e.institution === institution;
+  });
+  if (!edu || !edu.id) {
+    console.warn(`Education not found: ${institution}${degree ? ` (${degree})` : ''}`);
+    return null;
+  }
+  return edu.id;
+};
+
 export const seedSkills = () => {
   const skills = [
     // Technical Skills
@@ -80,6 +106,28 @@ export const seedEducation = () => {
 };
 
 export const seedEmployees = (skills, education) => {
+  // Helper to build skills array with null filtering
+  const buildSkills = (skillNames) => {
+    return skillNames
+      .map(({ name, proficiency }) => {
+        const skillId = getSkillId(skills, name);
+        if (!skillId) return null;
+        return { skillId, proficiencyLevel: proficiency };
+      })
+      .filter(Boolean);
+  };
+
+  // Helper to build education array with null filtering
+  const buildEducation = (eduList) => {
+    return eduList
+      .map(({ institution, degree }) => {
+        const educationId = getEducationId(education, institution, degree);
+        if (!educationId) return null;
+        return { educationId };
+      })
+      .filter(Boolean);
+  };
+
   const employees = [
     {
       name: 'Sarah Johnson',
@@ -96,17 +144,17 @@ export const seedEmployees = (skills, education) => {
       ],
       careerNextSteps: 'Looking to transition into a technical leadership role, focusing on architecture and mentoring the next generation of engineers.',
       previousExperience: 'Worked at a fintech startup as Lead Frontend Engineer, building trading platforms and real-time dashboards.',
-      skills: [
-        { skillId: skills.find(s => s.name === 'React').id, proficiencyLevel: 'Expert' },
-        { skillId: skills.find(s => s.name === 'JavaScript').id, proficiencyLevel: 'Expert' },
-        { skillId: skills.find(s => s.name === 'TypeScript').id, proficiencyLevel: 'Advanced' },
-        { skillId: skills.find(s => s.name === 'Node.js').id, proficiencyLevel: 'Advanced' },
-        { skillId: skills.find(s => s.name === 'AWS').id, proficiencyLevel: 'Intermediate' }
-      ],
-      education: [
-        { educationId: education.find(e => e.institution === 'Stanford University').id },
-        { educationId: education.find(e => e.institution === 'Udemy').id }
-      ]
+      skills: buildSkills([
+        { name: 'React', proficiency: 'Expert' },
+        { name: 'JavaScript', proficiency: 'Expert' },
+        { name: 'TypeScript', proficiency: 'Advanced' },
+        { name: 'Node.js', proficiency: 'Advanced' },
+        { name: 'AWS', proficiency: 'Intermediate' }
+      ]),
+      education: buildEducation([
+        { institution: 'Stanford University' },
+        { institution: 'Udemy' }
+      ])
     },
     {
       name: 'Michael Chen',
@@ -123,16 +171,16 @@ export const seedEmployees = (skills, education) => {
       ],
       careerNextSteps: 'Aiming for VP of Product role, focusing on strategic planning and cross-functional leadership.',
       previousExperience: 'Product Manager at a SaaS company, managing B2B enterprise products with $10M+ ARR.',
-      skills: [
-        { skillId: skills.find(s => s.name === 'Project Management').id, proficiencyLevel: 'Expert' },
-        { skillId: skills.find(s => s.name === 'Leadership').id, proficiencyLevel: 'Advanced' },
-        { skillId: skills.find(s => s.name === 'Communication').id, proficiencyLevel: 'Expert' },
-        { skillId: skills.find(s => s.name === 'Data Analysis').id, proficiencyLevel: 'Intermediate' }
-      ],
-      education: [
-        { educationId: education.find(e => e.institution === 'Harvard University').id },
-        { educationId: education.find(e => e.degree === 'PMP').id }
-      ]
+      skills: buildSkills([
+        { name: 'Project Management', proficiency: 'Expert' },
+        { name: 'Leadership', proficiency: 'Advanced' },
+        { name: 'Communication', proficiency: 'Expert' },
+        { name: 'Data Analysis', proficiency: 'Intermediate' }
+      ]),
+      education: buildEducation([
+        { institution: 'Harvard University' },
+        { institution: 'AWS', degree: 'Solutions Architect Professional' }
+      ])
     },
     {
       name: 'Emily Rodriguez',
@@ -149,15 +197,15 @@ export const seedEmployees = (skills, education) => {
       ],
       careerNextSteps: 'Growing into a design leadership role while maintaining hands-on design work. Interested in product strategy.',
       previousExperience: 'UI/UX Designer at a digital agency, worked with clients across e-commerce, healthcare, and education sectors.',
-      skills: [
-        { skillId: skills.find(s => s.name === 'CSS').id, proficiencyLevel: 'Expert' },
-        { skillId: skills.find(s => s.name === 'HTML').id, proficiencyLevel: 'Expert' },
-        { skillId: skills.find(s => s.name === 'Creativity').id, proficiencyLevel: 'Expert' },
-        { skillId: skills.find(s => s.name === 'Communication').id, proficiencyLevel: 'Advanced' }
-      ],
-      education: [
-        { educationId: education.find(e => e.institution === 'Google' && e.degree === 'UX Design Certificate').id }
-      ]
+      skills: buildSkills([
+        { name: 'CSS', proficiency: 'Expert' },
+        { name: 'HTML', proficiency: 'Expert' },
+        { name: 'Creativity', proficiency: 'Expert' },
+        { name: 'Communication', proficiency: 'Advanced' }
+      ]),
+      education: buildEducation([
+        { institution: 'Google', degree: 'UX Design Certificate' }
+      ])
     },
     {
       name: 'David Kim',
@@ -174,16 +222,16 @@ export const seedEmployees = (skills, education) => {
       ],
       careerNextSteps: 'Looking to lead a data science team and drive AI strategy across the organization.',
       previousExperience: 'Data Analyst at tech company, focused on business intelligence and reporting for executive team.',
-      skills: [
-        { skillId: skills.find(s => s.name === 'Python').id, proficiencyLevel: 'Expert' },
-        { skillId: skills.find(s => s.name === 'Machine Learning').id, proficiencyLevel: 'Advanced' },
-        { skillId: skills.find(s => s.name === 'Data Analysis').id, proficiencyLevel: 'Expert' },
-        { skillId: skills.find(s => s.name === 'SQL').id, proficiencyLevel: 'Advanced' }
-      ],
-      education: [
-        { educationId: education.find(e => e.institution === 'MIT').id },
-        { educationId: education.find(e => e.institution === 'Coursera').id }
-      ]
+      skills: buildSkills([
+        { name: 'Python', proficiency: 'Expert' },
+        { name: 'Machine Learning', proficiency: 'Advanced' },
+        { name: 'Data Analysis', proficiency: 'Expert' },
+        { name: 'SQL', proficiency: 'Advanced' }
+      ]),
+      education: buildEducation([
+        { institution: 'MIT' },
+        { institution: 'Coursera' }
+      ])
     },
     {
       name: 'Jessica Williams',
@@ -200,15 +248,15 @@ export const seedEmployees = (skills, education) => {
       ],
       careerNextSteps: 'Aspiring to become CMO, focusing on strategic growth initiatives and team building.',
       previousExperience: 'Marketing Specialist at consumer brand, managed social media and influencer partnerships.',
-      skills: [
-        { skillId: skills.find(s => s.name === 'Communication').id, proficiencyLevel: 'Expert' },
-        { skillId: skills.find(s => s.name === 'Creativity').id, proficiencyLevel: 'Advanced' },
-        { skillId: skills.find(s => s.name === 'Project Management').id, proficiencyLevel: 'Advanced' },
-        { skillId: skills.find(s => s.name === 'Presentation Skills').id, proficiencyLevel: 'Expert' }
-      ],
-      education: [
-        { educationId: education.find(e => e.institution === 'Harvard University').id }
-      ]
+      skills: buildSkills([
+        { name: 'Communication', proficiency: 'Expert' },
+        { name: 'Creativity', proficiency: 'Advanced' },
+        { name: 'Project Management', proficiency: 'Advanced' },
+        { name: 'Presentation Skills', proficiency: 'Expert' }
+      ]),
+      education: buildEducation([
+        { institution: 'Harvard University' }
+      ])
     }
   ];
 
