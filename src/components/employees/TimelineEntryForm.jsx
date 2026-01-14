@@ -156,11 +156,14 @@ const TimelineEntryForm = ({ isOpen, onClose, onAdd, editEntry = null, allEntrie
                   🔄 Concurrent with {overlappingProjects.length} other project{overlappingProjects.length > 1 ? 's' : ''}
                 </p>
                 <ul className="text-xs text-amber-700 mt-1 space-y-1">
-                  {overlappingProjects.map(project => (
-                    <li key={project.id}>
-                      • {project.title} ({formatDateRange(project.startDate, project.endDate)})
-                    </li>
-                  ))}
+                  {overlappingProjects.map(project => {
+                    if (!project || !project.id) return null;
+                    return (
+                      <li key={project.id}>
+                        • {project?.title || 'Untitled'} ({formatDateRange(project.startDate, project.endDate)})
+                      </li>
+                    );
+                  })}
                 </ul>
               </div>
             </div>

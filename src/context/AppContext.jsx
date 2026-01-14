@@ -60,8 +60,8 @@ export const AppProvider = ({ children }) => {
 
   const updateEmployee = (id, employeeData) => {
     const updated = employees.map(emp =>
-      emp.id === id
-        ? { ...employeeData, id, createdAt: emp.createdAt, updatedAt: new Date().toISOString() }
+      emp?.id === id
+        ? { ...employeeData, id, createdAt: emp?.createdAt, updatedAt: new Date().toISOString() }
         : emp
     );
     setEmployeesState(updated);
@@ -69,7 +69,7 @@ export const AppProvider = ({ children }) => {
   };
 
   const deleteEmployee = (id) => {
-    const updated = employees.filter(emp => emp.id !== id);
+    const updated = employees.filter(emp => emp?.id !== id);
     setEmployeesState(updated);
     setEmployees(updated);
   };
@@ -89,7 +89,7 @@ export const AppProvider = ({ children }) => {
 
   const updateSkill = (id, skillData) => {
     const updated = skills.map(skill =>
-      skill.id === id ? { ...skillData, id, createdAt: skill.createdAt } : skill
+      skill?.id === id ? { ...skillData, id, createdAt: skill?.createdAt } : skill
     );
     setSkillsState(updated);
     setSkills(updated);
@@ -99,13 +99,13 @@ export const AppProvider = ({ children }) => {
     // Remove skill from all employees first
     const updatedEmployees = employees.map(emp => ({
       ...emp,
-      skills: emp.skills.filter(s => s.skillId !== id)
+      skills: (emp?.skills || []).filter(s => s?.skillId !== id)
     }));
     setEmployeesState(updatedEmployees);
     setEmployees(updatedEmployees);
 
     // Then remove the skill
-    const updated = skills.filter(skill => skill.id !== id);
+    const updated = skills.filter(skill => skill?.id !== id);
     setSkillsState(updated);
     setSkills(updated);
   };
@@ -125,7 +125,7 @@ export const AppProvider = ({ children }) => {
 
   const updateEducation = (id, educationData) => {
     const updated = education.map(edu =>
-      edu.id === id ? { ...educationData, id, createdAt: edu.createdAt } : edu
+      edu?.id === id ? { ...educationData, id, createdAt: edu?.createdAt } : edu
     );
     setEducationState(updated);
     setEducation(updated);
@@ -135,13 +135,13 @@ export const AppProvider = ({ children }) => {
     // Remove education from all employees first
     const updatedEmployees = employees.map(emp => ({
       ...emp,
-      education: (emp.education || []).filter(e => e.educationId !== id)
+      education: (emp?.education || []).filter(e => e?.educationId !== id)
     }));
     setEmployeesState(updatedEmployees);
     setEmployees(updatedEmployees);
 
     // Then remove the education
-    const updated = education.filter(edu => edu.id !== id);
+    const updated = education.filter(edu => edu?.id !== id);
     setEducationState(updated);
     setEducation(updated);
   };
@@ -149,12 +149,15 @@ export const AppProvider = ({ children }) => {
   // Search and filter
   const getFilteredEmployees = () => {
     return employees.filter(emp => {
+      // Skip invalid employees
+      if (!emp) return false;
+
       // Search query
       if (searchQuery) {
         const query = searchQuery.toLowerCase();
-        const matchesName = emp.name.toLowerCase().includes(query);
-        const matchesEmail = emp.email.toLowerCase().includes(query);
-        const matchesRole = emp.role.toLowerCase().includes(query);
+        const matchesName = emp?.name?.toLowerCase().includes(query) || false;
+        const matchesEmail = emp?.email?.toLowerCase().includes(query) || false;
+        const matchesRole = emp?.role?.toLowerCase().includes(query) || false;
 
         if (!matchesName && !matchesEmail && !matchesRole) {
           return false;
@@ -162,18 +165,18 @@ export const AppProvider = ({ children }) => {
       }
 
       // Department filter
-      if (filters.department && emp.department !== filters.department) {
+      if (filters.department && emp?.department !== filters.department) {
         return false;
       }
 
       // Role filter
-      if (filters.role && emp.role !== filters.role) {
+      if (filters.role && emp?.role !== filters.role) {
         return false;
       }
 
       // Skills filter (employee must have ALL selected skills)
       if (filters.skills.length > 0) {
-        const empSkillIds = (emp.skills || []).map(s => s.skillId);
+        const empSkillIds = (emp?.skills || []).map(s => s?.skillId).filter(Boolean);
         const hasAllSkills = filters.skills.every(skillId => empSkillIds.includes(skillId));
         if (!hasAllSkills) return false;
       }

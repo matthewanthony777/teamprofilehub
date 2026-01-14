@@ -13,11 +13,11 @@ const SkillSelector = ({ selectedSkills, onChange }) => {
   const handleAddSkill = () => {
     if (!selectedSkillId) return;
 
-    const skill = skills.find((s) => s.id === selectedSkillId);
+    const skill = skills.find((s) => s && s.id === selectedSkillId);
     if (!skill) return;
 
     // Check if skill already added
-    if (selectedSkills.some((s) => s.skillId === selectedSkillId)) {
+    if (selectedSkills.some((s) => s && s.skillId === selectedSkillId)) {
       alert('This skill is already added');
       return;
     }
@@ -34,19 +34,19 @@ const SkillSelector = ({ selectedSkills, onChange }) => {
   };
 
   const handleRemoveSkill = (skillId) => {
-    onChange(selectedSkills.filter((s) => s.skillId !== skillId));
+    onChange(selectedSkills.filter((s) => s && s.skillId !== skillId));
   };
 
   const handleProficiencyChange = (skillId, newProficiency) => {
     onChange(
       selectedSkills.map((s) =>
-        s.skillId === skillId ? { ...s, proficiencyLevel: newProficiency } : s
+        s && s.skillId === skillId ? { ...s, proficiencyLevel: newProficiency } : s
       )
     );
   };
 
   const availableSkills = skills.filter(
-    (skill) => !selectedSkills.some((s) => s.skillId === skill.id)
+    (skill) => skill && !selectedSkills.some((s) => s && s.skillId === skill.id)
   );
 
   return (
@@ -57,7 +57,8 @@ const SkillSelector = ({ selectedSkills, onChange }) => {
       {selectedSkills.length > 0 && (
         <div className="space-y-2">
           {selectedSkills.map((empSkill) => {
-            const skill = skills.find((s) => s.id === empSkill.skillId);
+            if (!empSkill || !empSkill.skillId) return null;
+            const skill = skills.find((s) => s && s.id === empSkill.skillId);
             if (!skill) return null;
 
             return (

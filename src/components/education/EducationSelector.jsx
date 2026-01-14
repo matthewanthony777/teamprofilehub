@@ -76,7 +76,7 @@ const EducationSelector = ({ selectedEducation, onChange }) => {
   };
 
   const handleRemoveEducation = (id) => {
-    onChange(selectedEducation.filter((e) => e.id !== id));
+    onChange(selectedEducation.filter((e) => e && e.id !== id));
     setDeleteConfirm(null);
   };
 
@@ -95,6 +95,7 @@ const EducationSelector = ({ selectedEducation, onChange }) => {
 
   // Sort education by year completed (most recent first)
   const sortedEducation = [...selectedEducation].sort((a, b) => {
+    if (!a || !b) return 0;
     if (!a.yearCompleted && !b.yearCompleted) return 0;
     if (!a.yearCompleted) return 1;
     if (!b.yearCompleted) return -1;
@@ -109,15 +110,17 @@ const EducationSelector = ({ selectedEducation, onChange }) => {
       {/* Display selected education */}
       {sortedEducation.length > 0 && (
         <div className="space-y-3">
-          {sortedEducation.map((edu) => (
-            <div
-              key={edu.id}
-              className="group relative bg-gradient-to-br from-gray-50 to-gray-100/50 border border-gray-200 rounded-xl p-4 hover:shadow-md transition-all duration-300"
-            >
-              <div className="flex items-start justify-between gap-4">
-                <div className="flex-1 space-y-2">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <EducationBadge level={edu.level} size="sm" />
+          {sortedEducation.map((edu) => {
+            if (!edu || !edu.id) return null;
+            return (
+              <div
+                key={edu.id}
+                className="group relative bg-gradient-to-br from-gray-50 to-gray-100/50 border border-gray-200 rounded-xl p-4 hover:shadow-md transition-all duration-300"
+              >
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex-1 space-y-2">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <EducationBadge level={edu.level} size="sm" />
                     <span className="font-semibold text-gray-900">{edu.institution}</span>
                   </div>
 
@@ -168,7 +171,8 @@ const EducationSelector = ({ selectedEducation, onChange }) => {
                 </button>
               </div>
             </div>
-          ))}
+            );
+          })}
         </div>
       )}
 
