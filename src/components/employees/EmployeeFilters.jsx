@@ -28,9 +28,9 @@ const EmployeeFilters = () => {
   const hasActiveFilters = filters.department || filters.role || filters.skills.length > 0;
 
   return (
-    <div className="bg-white rounded-lg shadow p-4">
+    <div className="bg-dark-surface border border-dark-border rounded-xl p-6">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="font-semibold text-gray-900">Filters</h3>
+        <h3 className="font-semibold text-white">Filters</h3>
         {hasActiveFilters && (
           <Button variant="ghost" onClick={clearFilters} size="sm">
             Clear All
@@ -41,11 +41,11 @@ const EmployeeFilters = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {/* Department Filter */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Department</label>
+          <label className="block text-sm font-medium text-gray-400 mb-2">Department</label>
           <select
             value={filters.department}
             onChange={(e) => handleFilterChange('department', e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+            className="w-full px-3 py-2 bg-dark-card border border-dark-border rounded-lg text-gray-300 focus:outline-none focus:ring-2 focus:ring-accent-primary focus:border-accent-primary text-sm"
           >
             <option value="">All Departments</option>
             {DEPARTMENTS.map((dept) => (
@@ -58,11 +58,11 @@ const EmployeeFilters = () => {
 
         {/* Role Filter */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Role</label>
+          <label className="block text-sm font-medium text-gray-400 mb-2">Role</label>
           <select
             value={filters.role}
             onChange={(e) => handleFilterChange('role', e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+            className="w-full px-3 py-2 bg-dark-card border border-dark-border rounded-lg text-gray-300 focus:outline-none focus:ring-2 focus:ring-accent-primary focus:border-accent-primary text-sm"
           >
             <option value="">All Roles</option>
             {roles.map((role) => (
@@ -75,17 +75,17 @@ const EmployeeFilters = () => {
 
         {/* Skills Filter */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-gray-400 mb-2">
             Skills (select multiple)
           </label>
-          <div className="border border-gray-300 rounded-md p-2 max-h-32 overflow-y-auto">
+          <div className="bg-dark-card border border-dark-border rounded-lg p-3 max-h-32 overflow-y-auto">
             {skills.slice(0, 10).map((skill) => (
-              <label key={skill.id} className="flex items-center text-sm py-1 cursor-pointer">
+              <label key={skill.id} className="flex items-center text-sm py-1.5 cursor-pointer text-gray-300 hover:text-white transition-colors">
                 <input
                   type="checkbox"
                   checked={filters.skills.includes(skill.id)}
                   onChange={() => handleSkillToggle(skill.id)}
-                  className="mr-2"
+                  className="mr-2 accent-accent-primary"
                 />
                 {skill.name}
               </label>

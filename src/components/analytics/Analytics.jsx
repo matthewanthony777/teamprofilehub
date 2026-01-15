@@ -11,6 +11,7 @@ import {
   filterEmployeesByDepartment
 } from '../../utils/analytics';
 import { exportAnalyticsToCSV } from '../../utils/analyticsExport';
+import PageLayout from '../PageLayout';
 import AnalyticsFilters from './AnalyticsFilters';
 import SkillsDistribution from './SkillsDistribution';
 import ProficiencyBreakdown from './ProficiencyBreakdown';
@@ -40,23 +41,20 @@ const Analytics = () => {
   // Show empty state if no employees
   if (!employees || employees.length === 0) {
     return (
-      <div className="space-y-8 animate-fade-in">
-        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
-          <div>
-            <h2 className="text-4xl font-bold text-gray-900 font-display">Analytics Dashboard</h2>
-            <p className="text-gray-600 mt-1">Visual insights into skills, education, and team composition</p>
-          </div>
-        </div>
-        <div className="bg-white rounded-2xl shadow-soft p-12 text-center border border-gray-100">
-          <div className="text-gray-400 mb-4">
+      <PageLayout
+        title="Analytics Dashboard"
+        description="Visual insights into skills, education, and team composition"
+      >
+        <div className="bg-dark-surface border border-dark-border rounded-xl p-12 text-center">
+          <div className="text-gray-600 mb-4">
             <svg className="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
             </svg>
           </div>
-          <h3 className="text-xl font-semibold text-gray-700 mb-2">No Data Available</h3>
+          <h3 className="text-lg font-semibold text-white mb-2">No Data Available</h3>
           <p className="text-gray-500">Add employees to see analytics and insights.</p>
         </div>
-      </div>
+      </PageLayout>
     );
   }
 
@@ -73,16 +71,10 @@ const Analytics = () => {
   };
 
   return (
-    <div className="space-y-8 animate-fade-in">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
-        <div>
-          <h2 className="text-4xl font-bold text-gray-900 font-display">Analytics Dashboard</h2>
-          <p className="text-gray-600 mt-1">
-            Visual insights into skills, education, and team composition
-            {selectedDepartment && ` • ${selectedDepartment} Department`}
-          </p>
-        </div>
+    <PageLayout
+      title="Analytics Dashboard"
+      description={`Visual insights into skills, education, and team composition${selectedDepartment ? ` • ${selectedDepartment} Department` : ''}`}
+      actions={
         <Button variant="secondary" onClick={handleExportAnalytics}>
           <span className="flex items-center gap-2">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -96,8 +88,8 @@ const Analytics = () => {
             Export Analytics
           </span>
         </Button>
-      </div>
-
+      }
+    >
       {/* Filters */}
       <AnalyticsFilters
         selectedDepartment={selectedDepartment}
@@ -120,7 +112,7 @@ const Analytics = () => {
       />
       <DepartmentComposition employees={employees} />
       <SkillsGapAnalysis employees={employees} skills={skills} />
-    </div>
+    </PageLayout>
   );
 };
 

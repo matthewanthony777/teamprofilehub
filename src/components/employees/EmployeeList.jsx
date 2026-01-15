@@ -1,9 +1,9 @@
 import { useContext } from 'react';
 import { AppContext } from '../../context/AppContext';
+import PageLayout from '../PageLayout';
 import SearchBar from '../common/SearchBar';
 import EmployeeFilters from './EmployeeFilters';
 import EmployeeCard from './EmployeeCard';
-import Button from '../common/Button';
 import { VIEWS } from '../../constants';
 
 const EmployeeList = () => {
@@ -23,30 +23,29 @@ const EmployeeList = () => {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
-        <h2 className="text-3xl font-bold text-gray-900">Employees</h2>
-        <Button onClick={() => setCurrentView(VIEWS.EMPLOYEE_FORM)}>Add Employee</Button>
-      </div>
-
-      <div className="bg-white p-4 rounded-lg shadow">
+    <PageLayout
+      title="Employees"
+      description={`Showing ${filteredEmployees.length} employee${filteredEmployees.length !== 1 ? 's' : ''}`}
+    >
+      {/* Search and Filters */}
+      <div className="space-y-6">
         <SearchBar
           value={searchQuery}
           onChange={setSearchQuery}
           placeholder="Search employees by name, role, or email..."
         />
+
+        <EmployeeFilters />
       </div>
 
-      <EmployeeFilters />
-
-      <div className="text-sm text-gray-600">
-        Showing {filteredEmployees.length} employee{filteredEmployees.length !== 1 ? 's' : ''}
-      </div>
-
+      {/* Employee Grid */}
       {filteredEmployees.length === 0 ? (
-        <div className="text-center py-12 bg-white rounded-lg shadow">
-          <p className="text-gray-500 text-lg">No employees found</p>
-          <p className="text-gray-400 text-sm mt-2">Try adjusting your search or filters</p>
+        <div className="text-center py-12 bg-dark-surface border border-dark-border rounded-xl">
+          <svg className="w-16 h-16 mx-auto text-gray-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+          </svg>
+          <p className="text-white text-lg font-semibold mb-2">No employees found</p>
+          <p className="text-gray-500 text-sm">Try adjusting your search or filters</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -62,7 +61,7 @@ const EmployeeList = () => {
           })}
         </div>
       )}
-    </div>
+    </PageLayout>
   );
 };
 
