@@ -10,19 +10,19 @@ const SkillsDistribution = ({ employees, skills }) => {
 
   if (data.length === 0) {
     return (
-      <div className="bg-white rounded-2xl shadow-soft p-6 border border-gray-100">
-        <h3 className="text-xl font-semibold font-display mb-4">Skills Distribution</h3>
+      <div className="bg-dark-surface border border-dark-border rounded-xl p-6">
+        <h3 className="text-base font-semibold text-white mb-4">Skills Distribution</h3>
         <p className="text-gray-500 text-center py-8">No skills data available</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-white rounded-2xl shadow-soft p-6 border border-gray-100">
-      <div className="flex items-center justify-between mb-4">
+    <div className="bg-dark-surface border border-dark-border rounded-xl p-6 hover:border-gray-600 transition-all">
+      <div className="flex items-center justify-between mb-6">
         <div>
-          <h3 className="text-xl font-semibold font-display">Skills Distribution</h3>
-          <p className="text-sm text-gray-500 mt-1">Top 20 skills by employee count</p>
+          <h3 className="text-base font-semibold text-white mb-1">Skills Distribution</h3>
+          <p className="text-sm text-gray-500">Top 20 skills by employee count</p>
         </div>
         <ChartExport
           data={data}
@@ -33,23 +33,24 @@ const SkillsDistribution = ({ employees, skills }) => {
 
       <ResponsiveContainer width="100%" height={350}>
         <BarChart data={data} margin={{ top: 5, right: 10, left: -10, bottom: 80 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+          <CartesianGrid strokeDasharray="3 3" stroke="#2a2a2a" />
           <XAxis
             dataKey="skillName"
             angle={-45}
             textAnchor="end"
             height={100}
-            tick={{ fontSize: 12 }}
-            stroke="#6b7280"
+            tick={{ fontSize: 12, fill: '#9ca3af' }}
+            stroke="#2a2a2a"
           />
-          <YAxis stroke="#6b7280" tick={{ fontSize: 12 }} />
+          <YAxis stroke="#2a2a2a" tick={{ fontSize: 12, fill: '#9ca3af' }} />
           <Tooltip
             contentStyle={{
-              backgroundColor: 'white',
-              border: '1px solid #e5e7eb',
+              backgroundColor: '#1a1a1a',
+              border: '1px solid #2a2a2a',
               borderRadius: '8px',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+              color: '#ffffff'
             }}
+            labelStyle={{ color: '#9ca3af' }}
             formatter={(value, name) => [value, 'Employees']}
             labelFormatter={(label) => `Skill: ${label}`}
           />

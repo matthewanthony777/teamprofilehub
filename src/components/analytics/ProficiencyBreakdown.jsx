@@ -16,19 +16,19 @@ const ProficiencyBreakdown = ({ employees }) => {
 
   if (totalSkills === 0) {
     return (
-      <div className="bg-white rounded-2xl shadow-soft p-6 border border-gray-100">
-        <h3 className="text-xl font-semibold font-display mb-4">Proficiency Breakdown</h3>
+      <div className="bg-dark-surface border border-dark-border rounded-xl p-6">
+        <h3 className="text-base font-semibold text-white mb-4">Proficiency Breakdown</h3>
         <p className="text-gray-500 text-center py-8">No proficiency data available</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-white rounded-2xl shadow-soft p-6 border border-gray-100">
-      <div className="flex items-center justify-between mb-4">
+    <div className="bg-dark-surface border border-dark-border rounded-xl p-6 hover:border-gray-600 transition-all">
+      <div className="flex items-center justify-between mb-6">
         <div>
-          <h3 className="text-xl font-semibold font-display">Proficiency Breakdown</h3>
-          <p className="text-sm text-gray-500 mt-1">Distribution across all skills</p>
+          <h3 className="text-base font-semibold text-white mb-1">Proficiency Breakdown</h3>
+          <p className="text-sm text-gray-500">Distribution across all skills</p>
         </div>
         <ChartExport
           data={data}
@@ -55,11 +55,12 @@ const ProficiencyBreakdown = ({ employees }) => {
           </Pie>
           <Tooltip
             contentStyle={{
-              backgroundColor: 'white',
-              border: '1px solid #e5e7eb',
+              backgroundColor: '#1a1a1a',
+              border: '1px solid #2a2a2a',
               borderRadius: '8px',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+              color: '#ffffff'
             }}
+            labelStyle={{ color: '#9ca3af' }}
             formatter={(value, name, props) => [
               `${value} (${props.payload.percentage}%)`,
               props.payload.level
@@ -69,12 +70,13 @@ const ProficiencyBreakdown = ({ employees }) => {
             verticalAlign="bottom"
             height={36}
             formatter={(value, entry) => `${entry.payload.level} (${entry.payload.count})`}
+            wrapperStyle={{ color: '#9ca3af' }}
           />
         </PieChart>
       </ResponsiveContainer>
 
       {/* Stats summary */}
-      <div className="mt-4 pt-4 border-t border-gray-100">
+      <div className="mt-4 pt-4 border-t border-dark-border">
         <div className="grid grid-cols-2 gap-4">
           {data.map((item) => (
             <div key={item.level} className="flex items-center gap-2">
@@ -82,8 +84,8 @@ const ProficiencyBreakdown = ({ employees }) => {
                 className="w-3 h-3 rounded-full"
                 style={{ backgroundColor: PROFICIENCY_CHART_COLORS[item.level] }}
               ></div>
-              <span className="text-sm text-gray-600">
-                {item.level}: <span className="font-semibold">{item.count}</span> ({item.percentage}%)
+              <span className="text-sm text-gray-400">
+                {item.level}: <span className="font-semibold text-white">{item.count}</span> ({item.percentage}%)
               </span>
             </div>
           ))}
