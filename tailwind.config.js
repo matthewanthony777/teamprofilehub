@@ -7,6 +7,19 @@ export default {
   theme: {
     extend: {
       colors: {
+        // Dark theme colors
+        dark: {
+          bg: '#0a0a0a',
+          surface: '#141414',
+          card: '#1a1a1a',
+          border: '#2a2a2a',
+          hover: '#242424',
+        },
+        accent: {
+          primary: '#3b82f6',
+          hover: '#2563eb',
+        },
+        // Original colors (kept for compatibility)
         primary: {
           50: '#eef2ff',
           100: '#e0e7ff',

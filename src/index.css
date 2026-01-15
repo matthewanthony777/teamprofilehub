@@ -2,209 +2,68 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  body {
-    @apply bg-gradient-to-br from-gray-50 via-blue-50/30 to-purple-50/20;
-    font-family: 'Inter', system-ui, sans-serif;
-    min-height: 100vh;
-  }
-
-  h1, h2, h3, h4, h5, h6 {
-    font-family: 'Poppins', system-ui, sans-serif;
-    @apply tracking-tight;
-  }
+/* Global resets and base styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-@layer components {
-  /* Glassmorphism effect */
-  .glass {
-    @apply bg-white/70 backdrop-blur-md border border-white/20;
-  }
-
-  .glass-strong {
-    @apply bg-white/90 backdrop-blur-xl border border-white/30;
-  }
-
-  /* Gradient text */
-  .gradient-text {
-    @apply bg-gradient-primary bg-clip-text text-transparent;
-  }
-
-  /* Card with lift effect */
-  .card-lift {
-    @apply transition-all duration-300 ease-in-out;
-  }
-
-  .card-lift:hover {
-    @apply -translate-y-1 shadow-medium;
-  }
-
-  /* Button gradient hover */
-  .btn-gradient {
-    @apply bg-gradient-primary text-white transition-all duration-300;
-    background-size: 200% 200%;
-  }
-
-  .btn-gradient:hover {
-    @apply shadow-glow;
-    background-position: right center;
-  }
-
-  /* Shimmer loading effect */
-  .shimmer {
-    background: linear-gradient(
-      90deg,
-      rgba(255, 255, 255, 0) 0%,
-      rgba(255, 255, 255, 0.4) 50%,
-      rgba(255, 255, 255, 0) 100%
-    );
-    background-size: 1000px 100%;
-    @apply animate-shimmer;
-  }
-
-  /* Scroll animations */
-  .fade-in-up {
-    @apply opacity-0 translate-y-4 transition-all duration-500;
-  }
-
-  .fade-in-up.active {
-    @apply opacity-100 translate-y-0;
-  }
-
-  /* Focus states */
-  .input-focus {
-    @apply focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200;
-  }
-
-  /* Badge with glow */
-  .badge-glow {
-    @apply transition-all duration-300;
-  }
-
-  .badge-glow:hover {
-    @apply shadow-glow scale-105;
-  }
-
-  /* Avatar circle */
-  .avatar {
-    @apply w-12 h-12 rounded-full flex items-center justify-center text-white font-semibold text-sm;
-    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-  }
-
-  /* Department colors */
-  .dept-engineering {
-    @apply border-l-4 border-primary-500;
-  }
-
-  .dept-marketing {
-    @apply border-l-4 border-emerald-500;
-  }
-
-  .dept-sales {
-    @apply border-l-4 border-amber-500;
-  }
-
-  .dept-hr {
-    @apply border-l-4 border-pink-500;
-  }
-
-  .dept-finance {
-    @apply border-l-4 border-indigo-500;
-  }
-
-  .dept-operations {
-    @apply border-l-4 border-cyan-500;
-  }
-
-  .dept-design {
-    @apply border-l-4 border-purple-500;
-  }
-
-  .dept-product {
-    @apply border-l-4 border-blue-500;
-  }
-
-  /* Timeline */
-  .timeline-node {
-    @apply w-5 h-5 rounded-full border-4 border-white shadow-medium;
-    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-  }
-
-  .timeline-line {
-    @apply w-1 bg-gradient-to-b from-primary-500 to-purple-500;
-  }
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #0a0a0a;
+  color: #e5e5e5;
+  min-height: 100vh;
 }
 
-/* Custom scrollbar */
-@layer utilities {
-  .scrollbar-thin::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-  }
-
-  .scrollbar-thin::-webkit-scrollbar-track {
-    @apply bg-gray-100 rounded-full;
-  }
-
-  .scrollbar-thin::-webkit-scrollbar-thumb {
-    @apply bg-gradient-primary rounded-full;
-  }
-
-  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-    @apply bg-primary-600;
-  }
-
-  /* Text gradient animation */
-  .animate-gradient-text {
-    background-size: 200% 200%;
-    @apply animate-gradient;
-  }
+/* Custom scrollbar for dark theme */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
 }
 
-/* Keyframe animations for gradients */
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
+::-webkit-scrollbar-track {
+  background: #141414;
+  border-radius: 5px;
 }
 
-.animate-float {
-  animation: float 3s ease-in-out infinite;
+::-webkit-scrollbar-thumb {
+  background: #2a2a2a;
+  border-radius: 5px;
 }
 
-/* Loading spinner with gradient */
-.spinner {
-  border: 3px solid rgba(99, 102, 241, 0.1);
-  border-top: 3px solid #6366f1;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  animation: spin 1s linear infinite;
+::-webkit-scrollbar-thumb:hover {
+  background: #3a3a3a;
 }
 
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
 }
 
-/* Fade in animation on mount */
-.page-enter {
-  @apply animate-fade-in;
+/* Focus styles */
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
 }
 
-/* Selection color */
+/* Selection color for dark theme */
 ::selection {
-  @apply bg-primary-500/20 text-primary-900;
+  background: rgba(59, 130, 246, 0.3);
+  color: #ffffff;
 }
 
 ::-moz-selection {
-  @apply bg-primary-500/20 text-primary-900;
+  background: rgba(59, 130, 246, 0.3);
+  color: #ffffff;
 }
 
-/* Additional modern animations */
+/* Animations */
 @keyframes fade-in {
   from {
     opacity: 0;
@@ -247,6 +106,11 @@
   }
 }
 
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 .animate-fade-in {
   animation: fade-in 0.3s ease-out;
 }
@@ -263,43 +127,12 @@
   animation: slide-down 0.3s ease-out;
 }
 
-/* Smooth scrolling */
-html {
-  scroll-behavior: smooth;
-}
-
-/* Enhanced scrollbar */
-::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
-}
-
-::-webkit-scrollbar-track {
-  background: #f1f5f9;
-  border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb {
-  background: linear-gradient(to bottom, #6366f1, #8b5cf6);
-  border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(to bottom, #4f46e5, #7c3aed);
-}
-
-/* Pulse animation for live indicators */
-@keyframes pulse-ring {
-  0% {
-    transform: scale(0.8);
-    opacity: 1;
-  }
-  100% {
-    transform: scale(1.5);
-    opacity: 0;
-  }
-}
-
-.pulse-ring {
-  animation: pulse-ring 1.5s cubic-bezier(0.455, 0.03, 0.515, 0.955) infinite;
+/* Loading spinner */
+.spinner {
+  border: 3px solid #2a2a2a;
+  border-top: 3px solid #3b82f6;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
 }

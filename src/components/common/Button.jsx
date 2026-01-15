@@ -1,8 +1,8 @@
 const variants = {
-  primary: 'bg-gradient-primary text-white hover:shadow-glow hover:scale-105',
-  secondary: 'bg-gradient-to-r from-gray-100 to-gray-200 hover:from-gray-200 hover:to-gray-300 text-gray-800',
-  danger: 'bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white hover:shadow-glow-purple',
-  ghost: 'bg-transparent hover:bg-gradient-card text-gray-700 border-2 border-gray-200 hover:border-primary-300'
+  primary: 'bg-accent-primary text-white hover:bg-accent-hover',
+  secondary: 'bg-dark-card text-gray-400 border border-dark-border hover:text-white hover:border-gray-600',
+  danger: 'bg-red-600 text-white hover:bg-red-700',
+  ghost: 'bg-transparent hover:bg-dark-card text-gray-400 border border-dark-border hover:text-white hover:border-gray-600'
 };
 
 const Button = ({
@@ -21,7 +21,7 @@ const Button = ({
       type={type}
       onClick={onClick}
       disabled={disabled}
-      className={`${sizeClasses} rounded-xl font-semibold transition-all duration-300 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 ${variants[variant]} ${className}`}
+      className={`${sizeClasses} rounded-lg font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${variants[variant]} ${className}`}
     >
       {children}
     </button>

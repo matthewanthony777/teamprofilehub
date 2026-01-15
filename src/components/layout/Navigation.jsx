@@ -14,15 +14,15 @@ const Navigation = () => {
   ];
 
   return (
-    <nav className="flex gap-2 flex-wrap">
+    <nav className="flex items-center gap-1">
       {navItems.map((item) => (
         <button
           key={item.view}
           onClick={() => setCurrentView(item.view)}
-          className={`px-4 py-2.5 rounded-xl font-medium transition-all duration-300 text-sm ${
+          className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
             currentView === item.view
-              ? 'bg-white text-primary-600 shadow-medium scale-105'
-              : 'bg-white/10 text-white hover:bg-white/20 backdrop-blur-sm'
+              ? 'bg-accent-primary text-white'
+              : 'text-gray-400 hover:text-white hover:bg-dark-card'
           }`}
         >
           {item.label}
