@@ -26,13 +26,24 @@ export const AppProvider = ({ children }) => {
 
   // Initialize data from localStorage or seed data
   useEffect(() => {
+    console.log('=== APPCONTEXT INITIALIZATION START ===');
     const storedEmployees = getEmployees();
     const storedSkills = getSkills();
     const storedEducation = getEducation();
 
+    console.log('Loaded from localStorage:');
+    console.log('- Employees:', storedEmployees.length);
+    console.log('- Skills:', storedSkills.length);
+    console.log('- Education:', storedEducation.length);
+
     if (storedEmployees.length === 0 && storedSkills.length === 0 && storedEducation.length === 0) {
+      console.log('No data found - initializing seed data');
       const { skills: seedSkills, education: seedEducation, employees: seedEmployees } = initializeSeedData();
       const normalizedEmployees = normalizeEmployees(seedEmployees);
+      console.log('Seed data created:');
+      console.log('- Skills:', seedSkills.length);
+      console.log('- Education:', seedEducation.length);
+      console.log('- Employees:', normalizedEmployees.length);
       setSkillsState(seedSkills);
       setEducationState(seedEducation);
       setEmployeesState(normalizedEmployees);
@@ -40,12 +51,15 @@ export const AppProvider = ({ children }) => {
       setEducation(seedEducation);
       setEmployees(normalizedEmployees);
     } else {
+      console.log('Loading existing data from localStorage');
       // Normalize employees on load to ensure all arrays exist
       const normalizedEmployees = normalizeEmployees(storedEmployees);
+      console.log('Normalized employees:', normalizedEmployees.length);
       setEmployeesState(normalizedEmployees);
       setSkillsState(storedSkills);
       setEducationState(storedEducation);
     }
+    console.log('=== APPCONTEXT INITIALIZATION COMPLETE ===');
   }, []);
 
   // Employee CRUD operations
