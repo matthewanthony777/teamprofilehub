@@ -18,7 +18,7 @@ const Header = () => {
               </svg>
             </div>
             <div>
-              <h1 className="text-base font-semibold text-white">SQC Employee Hub</h1>
+              <h1 className="text-base font-semibold text-white">SQC Team Hub</h1>
               <p className="text-xs text-gray-500">Talent Management</p>
             </div>
           </div>
