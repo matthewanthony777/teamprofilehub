@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { getEmployees, setEmployees, getSkills, setSkills, getEducation, setEducation } from '../utils/storage';
 import { initializeSeedData } from '../utils/seedData';
 import { exportToCSV } from '../utils/csvExport';
+import { normalizeEmployees } from '../utils/employeeModel';
 import { VIEWS } from '../constants';
 
 export const AppContext = createContext();
@@ -31,14 +32,17 @@ export const AppProvider = ({ children }) => {
 
     if (storedEmployees.length === 0 && storedSkills.length === 0 && storedEducation.length === 0) {
       const { skills: seedSkills, education: seedEducation, employees: seedEmployees } = initializeSeedData();
+      const normalizedEmployees = normalizeEmployees(seedEmployees);
       setSkillsState(seedSkills);
       setEducationState(seedEducation);
-      setEmployeesState(seedEmployees);
+      setEmployeesState(normalizedEmployees);
       setSkills(seedSkills);
       setEducation(seedEducation);
-      setEmployees(seedEmployees);
+      setEmployees(normalizedEmployees);
     } else {
-      setEmployeesState(storedEmployees);
+      // Normalize employees on load to ensure all arrays exist
+      const normalizedEmployees = normalizeEmployees(storedEmployees);
+      setEmployeesState(normalizedEmployees);
       setSkillsState(storedSkills);
       setEducationState(storedEducation);
     }

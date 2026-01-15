@@ -20,6 +20,7 @@ const EmployeeForm = () => {
     email: '',
     hireDate: '',
     phone: '',
+    location: '',
     aboutMe: '',
     careerNextSteps: '',
     previousExperience: '',
@@ -39,6 +40,7 @@ const EmployeeForm = () => {
         skills: selectedEmployee.skills || [],
         education: selectedEmployee.education || [],
         careerTimeline: selectedEmployee.careerTimeline || [],
+        location: selectedEmployee.location || '',
         aboutMe: selectedEmployee.aboutMe || '',
         careerNextSteps: selectedEmployee.careerNextSteps || '',
         previousExperience: selectedEmployee.previousExperience || ''
@@ -209,6 +211,15 @@ const EmployeeForm = () => {
                 onChange={handleChange}
                 placeholder="+1 555-0100"
                 error={errors.phone}
+              />
+
+              <Input
+                label="Location"
+                name="location"
+                value={formData.location}
+                onChange={handleChange}
+                placeholder="e.g., San Francisco, CA"
+                error={errors.location}
               />
             </div>
           </div>
