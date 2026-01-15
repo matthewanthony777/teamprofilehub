@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { v4 as uuidv4 } from 'uuid';
+import { AppContext } from '../../context/AppContext';
 import { EDUCATION_LEVELS, EDUCATION_STATUSES } from '../../constants';
 import Button from '../common/Button';
 import Input from '../common/Input';
@@ -8,6 +9,7 @@ import EducationBadge from './EducationBadge';
 import Modal from '../common/Modal';
 
 const EducationSelector = ({ selectedEducation, onChange }) => {
+  const { education: globalEducation, addEducation } = useContext(AppContext);
   const [showAddForm, setShowAddForm] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState(null);
   const [formData, setFormData] = useState({
@@ -60,7 +62,33 @@ const EducationSelector = ({ selectedEducation, onChange }) => {
       grade: formData.grade || ''
     };
 
+    // Add to employee's education list
     onChange([...selectedEducation, newEducation]);
+
+    // AUTO-ADD TO GLOBAL EDUCATION CATALOG
+    // Check if similar education already exists in global catalog
+    const existingInCatalog = globalEducation.find(
+      edu =>
+        edu &&
+        edu.institution === newEducation.institution &&
+        edu.degree === newEducation.level &&
+        edu.field === newEducation.subject
+    );
+
+    if (!existingInCatalog && newEducation.institution) {
+      // Only add to catalog if institution is provided and doesn't already exist
+      const catalogEntry = {
+        institution: newEducation.institution,
+        degree: newEducation.level,
+        field: newEducation.subject || 'General',
+        year: newEducation.yearCompleted || new Date().getFullYear().toString(),
+        status: newEducation.status || 'Completed',
+        category: getCategoryFromLevel(newEducation.level)
+      };
+
+      console.log('Auto-adding education to catalog:', catalogEntry);
+      addEducation(catalogEntry);
+    }
 
     // Reset form
     setFormData({
@@ -73,6 +101,23 @@ const EducationSelector = ({ selectedEducation, onChange }) => {
     });
     setFormErrors({});
     setShowAddForm(false);
+  };
+
+  // Helper function to map education level to category
+  const getCategoryFromLevel = (level) => {
+    const levelToCategoryMap = {
+      "Bachelor's Degree": "Degree",
+      "Master's Degree": "Degree",
+      "Doctorate (PhD)": "Degree",
+      "Associate Degree": "Degree",
+      "High School Diploma": "Degree",
+      "Professional Certification": "Certification",
+      "Technical Certification": "Certification",
+      "Online Course": "Course",
+      "Bootcamp": "Bootcamp",
+      "Self-taught": "Self-taught"
+    };
+    return levelToCategoryMap[level] || "Degree";
   };
 
   const handleRemoveEducation = (id) => {
