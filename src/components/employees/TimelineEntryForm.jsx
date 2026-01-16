@@ -146,16 +146,16 @@ const TimelineEntryForm = ({ isOpen, onClose, onAdd, editEntry = null, allEntrie
 
         {/* Overlap Warning */}
         {overlappingProjects.length > 0 && (
-          <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
+          <div className="bg-amber-500/10 border border-amber-500/30 rounded-lg p-3">
             <div className="flex items-start gap-2">
-              <svg className="w-5 h-5 text-amber-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 text-amber-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
               </svg>
               <div className="flex-1">
-                <p className="text-sm font-medium text-amber-800">
-                  🔄 Concurrent with {overlappingProjects.length} other project{overlappingProjects.length > 1 ? 's' : ''}
+                <p className="text-sm font-medium text-amber-400">
+                  Concurrent with {overlappingProjects.length} other project{overlappingProjects.length > 1 ? 's' : ''}
                 </p>
-                <ul className="text-xs text-amber-700 mt-1 space-y-1">
+                <ul className="text-xs text-amber-400/80 mt-1 space-y-1">
                   {overlappingProjects.map(project => {
                     if (!project || !project.id) return null;
                     return (
@@ -193,7 +193,7 @@ const TimelineEntryForm = ({ isOpen, onClose, onAdd, editEntry = null, allEntrie
 
         {/* Description */}
         <div>
-          <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="description" className="block text-sm font-medium text-gray-400 mb-2">
             Description <span className="text-red-500">*</span>
           </label>
           <textarea
@@ -204,16 +204,16 @@ const TimelineEntryForm = ({ isOpen, onClose, onAdd, editEntry = null, allEntrie
             placeholder="Describe what you worked on, the impact, and key achievements..."
             rows={4}
             required
-            className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-              errors.description ? 'border-red-500' : 'border-gray-300'
+            className={`w-full px-4 py-2.5 bg-[#0a0a0a] border rounded-lg text-white placeholder-gray-600 focus:outline-none transition-all resize-none ${
+              errors.description ? 'border-red-500' : 'border-[#2a2a2a] focus:border-[#3b82f6] hover:border-[#3a3a3a]'
             }`}
           />
-          {errors.description && <p className="mt-1 text-sm text-red-600">{errors.description}</p>}
+          {errors.description && <p className="mt-1 text-sm text-red-500">{errors.description}</p>}
         </div>
 
         {/* Tags */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-gray-400 mb-2">
             Tags (Optional)
           </label>
 
@@ -223,13 +223,13 @@ const TimelineEntryForm = ({ isOpen, onClose, onAdd, editEntry = null, allEntrie
               {formData.tags.map(tag => (
                 <span
                   key={tag}
-                  className="inline-flex items-center gap-1 px-2 py-1 bg-primary-100 text-primary-800 rounded-full text-xs font-medium"
+                  className="inline-flex items-center gap-1 px-2 py-1 bg-[#3b82f6]/20 text-[#3b82f6] rounded-full text-xs font-medium"
                 >
                   {tag}
                   <button
                     type="button"
                     onClick={() => handleRemoveTag(tag)}
-                    className="hover:text-primary-900"
+                    className="hover:text-[#2563eb]"
                   >
                     <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -249,18 +249,18 @@ const TimelineEntryForm = ({ isOpen, onClose, onAdd, editEntry = null, allEntrie
               onKeyDown={handleTagKeyDown}
               onFocus={() => setShowTagSuggestions(tagInput.length > 0)}
               placeholder="Type to add tags or choose from suggestions..."
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2.5 bg-[#0a0a0a] border border-[#2a2a2a] rounded-lg text-white placeholder-gray-600 focus:border-[#3b82f6] focus:outline-none"
             />
 
             {/* Tag Suggestions Dropdown */}
             {showTagSuggestions && filteredTagSuggestions.length > 0 && (
-              <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg max-h-48 overflow-y-auto">
+              <div className="absolute z-10 w-full mt-1 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg shadow-lg max-h-48 overflow-y-auto">
                 {filteredTagSuggestions.map(tag => (
                   <button
                     key={tag}
                     type="button"
                     onClick={() => handleAddTag(tag)}
-                    className="w-full text-left px-3 py-2 hover:bg-gray-100 text-sm"
+                    className="w-full text-left px-4 py-2 hover:bg-[#2a2a2a] text-sm text-gray-300"
                   >
                     {tag}
                   </button>
@@ -274,7 +274,7 @@ const TimelineEntryForm = ({ isOpen, onClose, onAdd, editEntry = null, allEntrie
         </div>
 
         {/* Form Actions */}
-        <div className="flex justify-end gap-2 pt-4 border-t border-gray-200">
+        <div className="flex justify-end gap-3 pt-4 border-t border-[#2a2a2a]">
           <Button variant="secondary" onClick={handleClose} type="button">
             Cancel
           </Button>

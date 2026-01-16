@@ -153,82 +153,97 @@ const EducationSelector = ({ selectedEducation, onChange }) => {
   return (
     <div className="space-y-4">
       {/* Display selected education */}
-      {sortedEducation.length > 0 && (
+      {sortedEducation.length > 0 ? (
         <div className="space-y-3">
           {sortedEducation.map((edu) => {
             if (!edu || !edu.id) return null;
             return (
               <div
                 key={edu.id}
-                className="group relative bg-gradient-to-br from-gray-50 to-gray-100/50 border border-gray-200 rounded-xl p-4 hover:shadow-md transition-all duration-300"
+                className="group relative bg-[#0a0a0a] border border-[#2a2a2a] rounded-lg p-4 hover:border-[#3a3a3a] transition-all"
               >
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1 space-y-2">
                     <div className="flex items-center gap-2 flex-wrap">
                       <EducationBadge level={edu.level} size="sm" />
-                    <span className="font-semibold text-gray-900">{edu.institution}</span>
-                  </div>
+                      <span className="font-medium text-white">{edu.institution}</span>
+                    </div>
 
-                  <div className="text-sm text-gray-700">
-                    <span className="font-medium">{edu.subject}</span>
-                    {edu.yearCompleted && (
-                      <>
-                        {' • '}
-                        <span className="text-gray-600">{edu.yearCompleted}</span>
-                      </>
-                    )}
-                  </div>
+                    <div className="text-sm text-gray-400">
+                      <span className="font-medium">{edu.subject}</span>
+                      {edu.yearCompleted && (
+                        <>
+                          {' • '}
+                          <span className="text-gray-500">{edu.yearCompleted}</span>
+                        </>
+                      )}
+                    </div>
 
-                  <div className="flex items-center gap-2 flex-wrap text-xs">
-                    <span
-                      className={`px-2 py-0.5 rounded-full font-medium ${
-                        edu.status === 'Completed'
-                          ? 'bg-green-100 text-green-800'
-                          : edu.status === 'In Progress'
-                          ? 'bg-yellow-100 text-yellow-800'
-                          : 'bg-gray-100 text-gray-800'
-                      }`}
-                    >
-                      {edu.status}
-                    </span>
-                    {edu.grade && (
-                      <span className="px-2 py-0.5 bg-blue-100 text-blue-800 rounded-full font-medium">
-                        {edu.grade}
+                    <div className="flex items-center gap-2 flex-wrap text-xs">
+                      <span
+                        className={`px-2 py-0.5 rounded-full font-medium ${
+                          edu.status === 'Completed'
+                            ? 'bg-green-500/20 text-green-400'
+                            : edu.status === 'In Progress'
+                            ? 'bg-yellow-500/20 text-yellow-400'
+                            : 'bg-gray-500/20 text-gray-400'
+                        }`}
+                      >
+                        {edu.status}
                       </span>
-                    )}
+                      {edu.grade && (
+                        <span className="px-2 py-0.5 bg-[#3b82f6]/20 text-[#3b82f6] rounded-full font-medium">
+                          {edu.grade}
+                        </span>
+                      )}
+                    </div>
                   </div>
-                </div>
 
-                <button
-                  type="button"
-                  onClick={() => setDeleteConfirm(edu.id)}
-                  className="opacity-0 group-hover:opacity-100 transition-opacity p-2 text-red-600 hover:text-red-800 hover:bg-red-50 rounded-lg"
-                  title="Remove education"
-                >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
-                </button>
+                  <button
+                    type="button"
+                    onClick={() => setDeleteConfirm(edu.id)}
+                    className="opacity-0 group-hover:opacity-100 transition-opacity p-2 text-gray-400 hover:text-red-500 hover:bg-red-500/10 rounded-lg"
+                    title="Remove education"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M6 18L18 6M6 6l12 12"
+                      />
+                    </svg>
+                  </button>
+                </div>
               </div>
-            </div>
             );
           })}
         </div>
+      ) : (
+        !showAddForm && (
+          <div className="text-center py-6 bg-[#0a0a0a] border border-[#2a2a2a] rounded-lg">
+            <svg className="w-10 h-10 text-gray-600 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14l9-5-9-5-9 5 9 5z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
+            </svg>
+            <p className="text-sm text-gray-500">No education added yet</p>
+          </div>
+        )
       )}
 
       {/* Add Education Form */}
       {!showAddForm ? (
         <Button variant="ghost" onClick={() => setShowAddForm(true)} type="button" size="sm">
-          + Add Education
+          <span className="flex items-center gap-1">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            </svg>
+            Add Education
+          </span>
         </Button>
       ) : (
-        <div className="bg-white border-2 border-primary-200 rounded-xl p-6 space-y-4 animate-fade-in">
-          <h4 className="font-semibold text-gray-900 text-lg">Add Education</h4>
+        <div className="bg-[#0a0a0a] border border-[#2a2a2a] rounded-lg p-6 space-y-4">
+          <h4 className="font-semibold text-white text-base">Add Education</h4>
 
           {/* Education Level */}
           <div>
@@ -250,12 +265,12 @@ const EducationSelector = ({ selectedEducation, onChange }) => {
               name="subject"
               value={formData.subject}
               onChange={handleFormChange}
-              placeholder="e.g., Computer Science, Business Administration, Mechanical Engineering"
+              placeholder="e.g., Computer Science, Business Administration"
               error={formErrors.subject}
               maxLength={100}
             />
             <p className="text-xs text-gray-500 mt-1">
-              Enter your field of study or specialization ({formData.subject.length}/100)
+              Enter your field of study ({formData.subject.length}/100)
             </p>
           </div>
 
@@ -313,7 +328,7 @@ const EducationSelector = ({ selectedEducation, onChange }) => {
           </div>
 
           {/* Form Actions */}
-          <div className="flex gap-3 pt-4">
+          <div className="flex gap-3 pt-4 border-t border-[#2a2a2a]">
             <Button onClick={handleAddEducation} type="button" disabled={!isFormValid}>
               Add Education
             </Button>
@@ -333,7 +348,7 @@ const EducationSelector = ({ selectedEducation, onChange }) => {
           size="sm"
         >
           <div className="space-y-4">
-            <p className="text-gray-700">
+            <p className="text-gray-400">
               Are you sure you want to remove this education entry? This action cannot be undone.
             </p>
             <div className="flex justify-end gap-3">

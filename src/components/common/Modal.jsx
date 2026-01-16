@@ -9,27 +9,25 @@ const Modal = ({ isOpen, onClose, title, children, size = 'md' }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto animate-fade-in">
-      <div className="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
-        {/* Glassmorphic Background overlay with blur */}
-        <div
-          className="fixed inset-0 transition-all duration-300 bg-gray-900/40 backdrop-blur-sm"
-          onClick={onClose}
-        ></div>
+    <div className="fixed inset-0 z-50 overflow-y-auto">
+      {/* Backdrop - Dark with blur */}
+      <div
+        className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
+        onClick={onClose}
+      ></div>
 
-        {/* Center modal */}
-        <span className="hidden sm:inline-block sm:align-middle sm:h-screen">&#8203;</span>
-
-        <div className={`inline-block align-bottom bg-white/95 backdrop-blur-md rounded-2xl text-left overflow-hidden shadow-strong transform transition-all duration-300 sm:my-8 sm:align-middle ${sizeClasses[size]} w-full border border-gray-200 animate-scale-in`}>
-          {/* Header with gradient background */}
-          <div className="bg-gradient-to-r from-primary-50 to-purple-50 px-6 py-4 border-b border-gray-200">
+      {/* Modal Container */}
+      <div className="flex min-h-full items-center justify-center p-4">
+        <div className={`relative bg-[#141414] border border-[#2a2a2a] rounded-xl shadow-2xl ${sizeClasses[size]} w-full max-h-[90vh] overflow-y-auto`}>
+          {/* Header */}
+          <div className="sticky top-0 bg-[#141414] border-b border-[#2a2a2a] px-6 py-4 z-10">
             <div className="flex items-center justify-between">
-              <h3 className="text-2xl font-bold text-gray-900 font-display">{title}</h3>
+              <h3 className="text-xl font-semibold text-white">{title}</h3>
               <button
                 onClick={onClose}
-                className="w-8 h-8 rounded-xl bg-white/80 hover:bg-white text-gray-500 hover:text-gray-700 transition-all duration-300 flex items-center justify-center shadow-soft hover:shadow-medium hover:scale-110"
+                className="w-9 h-9 flex items-center justify-center bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg text-gray-400 hover:text-white hover:border-[#3a3a3a] transition-all"
               >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
@@ -37,7 +35,7 @@ const Modal = ({ isOpen, onClose, title, children, size = 'md' }) => {
           </div>
 
           {/* Content */}
-          <div className="px-6 py-6 bg-white/90 backdrop-blur-sm">
+          <div className="px-6 py-6">
             {children}
           </div>
         </div>

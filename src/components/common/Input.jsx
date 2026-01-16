@@ -7,12 +7,15 @@ const Input = ({
   placeholder,
   required = false,
   error,
-  className = ''
+  className = '',
+  maxLength,
+  min,
+  max
 }) => {
   return (
     <div className={`${className}`}>
       {label && (
-        <label htmlFor={name} className="block text-sm font-semibold text-gray-700 mb-2">
+        <label htmlFor={name} className="block text-sm font-medium text-gray-400 mb-2">
           {label} {required && <span className="text-red-500">*</span>}
         </label>
       )}
@@ -24,14 +27,17 @@ const Input = ({
         onChange={onChange}
         placeholder={placeholder}
         required={required}
-        className={`w-full px-4 py-3 border-2 rounded-xl bg-white transition-all duration-300 focus:outline-none ${
+        maxLength={maxLength}
+        min={min}
+        max={max}
+        className={`w-full px-4 py-2.5 bg-[#0a0a0a] border rounded-lg text-white placeholder-gray-600 transition-all duration-200 focus:outline-none ${
           error
-            ? 'border-red-400 focus:border-red-500 focus:ring-2 focus:ring-red-200'
-            : 'border-gray-200 focus:border-primary-400 focus:ring-2 focus:ring-primary-100 hover:border-gray-300'
+            ? 'border-red-500 focus:border-red-500'
+            : 'border-[#2a2a2a] focus:border-[#3b82f6] hover:border-[#3a3a3a]'
         }`}
       />
       {error && (
-        <p className="mt-2 text-sm text-red-600 flex items-center gap-1">
+        <p className="mt-2 text-sm text-red-500 flex items-center gap-1">
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
