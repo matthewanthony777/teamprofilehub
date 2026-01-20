@@ -21,8 +21,11 @@ const SkillSelector = ({ selectedSkills, onChange }) => {
       return;
     }
 
+    // Store both skillId and skillName for cross-device compatibility
     const newSkill = {
       skillId: selectedSkillId,
+      skillName: skill.name,
+      skillCategory: skill.category,
       proficiencyLevel
     };
 
@@ -56,7 +59,8 @@ const SkillSelector = ({ selectedSkills, onChange }) => {
           {selectedSkills.map((empSkill) => {
             if (!empSkill || !empSkill.skillId) return null;
             const skill = skills.find((s) => s && s.id === empSkill.skillId);
-            if (!skill) return null;
+            // Use stored skillName as fallback if skill not found by ID
+            const displayName = skill?.name || empSkill.skillName || 'Unknown Skill';
 
             return (
               <div
@@ -64,7 +68,7 @@ const SkillSelector = ({ selectedSkills, onChange }) => {
                 className="flex items-center justify-between p-3 bg-[#0a0a0a] border border-[#2a2a2a] rounded-lg"
               >
                 <div className="flex items-center gap-3 flex-1">
-                  <span className="text-sm font-medium text-white">{skill.name}</span>
+                  <span className="text-sm font-medium text-white">{displayName}</span>
                   <select
                     value={empSkill.proficiencyLevel}
                     onChange={(e) => handleProficiencyChange(empSkill.skillId, e.target.value)}

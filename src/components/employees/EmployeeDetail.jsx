@@ -34,10 +34,15 @@ const EmployeeDetail = () => {
     setCurrentView(VIEWS.EMPLOYEES);
   };
 
-  const getSkillName = (skillId) => {
-    if (!skills || !Array.isArray(skills)) return 'Unknown';
-    const skill = skills.find((s) => s && s.id === skillId);
-    return skill ? skill.name : 'Unknown';
+  const getSkillName = (skillId, storedName = null) => {
+    // First try to find by ID in the skills catalog
+    if (skills && Array.isArray(skills)) {
+      const skill = skills.find((s) => s && s.id === skillId);
+      if (skill) return skill.name;
+    }
+    // Fallback to stored name if ID lookup fails (cross-device compatibility)
+    if (storedName) return storedName;
+    return 'Unknown';
   };
 
   const getEducationDetails = (educationId) => {
@@ -198,7 +203,7 @@ const EmployeeDetail = () => {
             {(selectedEmployee.skills || []).map((empSkill) => (
               <SkillBadge
                 key={empSkill.skillId}
-                skillName={getSkillName(empSkill.skillId)}
+                skillName={getSkillName(empSkill.skillId, empSkill.skillName)}
                 proficiencyLevel={empSkill.proficiencyLevel}
               />
             ))}

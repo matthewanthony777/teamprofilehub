@@ -11,21 +11,56 @@ export const calculateSkillsDistribution = (employees, skills) => {
   if (!employees || !Array.isArray(employees)) employees = [];
   if (!skills || !Array.isArray(skills)) skills = [];
 
-  const skillCounts = {};
+  // Create a map of skill ID to skill info, and also track by name for cross-device compatibility
+  const skillMap = new Map();
+  const skillByName = new Map();
 
+  skills.forEach(skill => {
+    if (skill?.id) {
+      skillMap.set(skill.id, { name: skill.name, category: skill.category, count: 0 });
+    }
+    if (skill?.name) {
+      skillByName.set(skill.name.toLowerCase(), skill.id);
+    }
+  });
+
+  // Count skills, using stored skillName as fallback for cross-device compatibility
   employees.forEach(emp => {
-    if (!emp) return; // Skip invalid employees
+    if (!emp) return;
     (emp.skills || []).forEach(empSkill => {
-      if (!empSkill || !empSkill.skillId) return; // Skip invalid skills
-      skillCounts[empSkill.skillId] = (skillCounts[empSkill.skillId] || 0) + 1;
+      if (!empSkill) return;
+
+      let skillId = empSkill.skillId;
+      let skillInfo = skillMap.get(skillId);
+
+      // If skill ID not found, try to find by stored name
+      if (!skillInfo && empSkill.skillName) {
+        const foundId = skillByName.get(empSkill.skillName.toLowerCase());
+        if (foundId) {
+          skillId = foundId;
+          skillInfo = skillMap.get(foundId);
+        } else {
+          // Create a temporary entry for this skill
+          skillInfo = {
+            name: empSkill.skillName,
+            category: empSkill.skillCategory || 'Unknown',
+            count: 0
+          };
+          skillMap.set(empSkill.skillId, skillInfo);
+        }
+      }
+
+      if (skillInfo) {
+        skillInfo.count++;
+      }
     });
   });
 
-  return skills.map(skill => ({
-    skillId: skill?.id || '',
-    skillName: skill?.name || 'Unknown',
-    category: skill?.category || 'Unknown',
-    count: skillCounts[skill?.id] || 0
+  return Array.from(skillMap.entries()).map(([id, info]) => ({
+    skillId: id,
+    skillName: info.name || 'Unknown',
+    category: info.category || 'Unknown',
+    count: info.count
   })).sort((a, b) => b.count - a.count);
 };
 

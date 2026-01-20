@@ -43,7 +43,8 @@ export const exportToCSV = (employees, skills, education) => {
     const employeeSkills = (emp.skills || [])
       .map(s => {
         if (!s || !s.skillId) return '';
-        const skillName = skillMap[s.skillId] || 'Unknown Skill';
+        // Use stored skillName as fallback for cross-device compatibility
+        const skillName = skillMap[s.skillId] || s.skillName || 'Unknown Skill';
         return `${skillName} (${s.proficiencyLevel || 'N/A'})`;
       })
       .filter(Boolean)
