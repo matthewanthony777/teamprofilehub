@@ -2,6 +2,7 @@ import { useContext } from 'react';
 import { AppContext } from '../../context/AppContext';
 import StatsCard from './StatsCard';
 import Button from '../common/Button';
+import MigrationPanel from '../MigrationPanel';
 import { VIEWS } from '../../constants';
 
 const Dashboard = () => {
@@ -23,6 +24,9 @@ const Dashboard = () => {
         <h1 className="text-2xl font-semibold text-white mb-2">Dashboard</h1>
         <p className="text-sm text-gray-500">Welcome back! Here's your employee overview.</p>
       </div>
+
+      {/* Migration Panel - REMOVE AFTER SUCCESSFUL MIGRATION */}
+      <MigrationPanel onMigrationComplete={() => window.location.reload()} />
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <StatsCard
