@@ -2,6 +2,11 @@ import { useContext } from 'react';
 import { AppContext } from '../../context/AppContext';
 import { VIEWS } from '../../constants';
 import Navigation from './Navigation';
+import UserSection from './UserSection';
+
+// Check if Clerk is configured
+const isClerkConfigured = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY &&
+  import.meta.env.VITE_CLERK_PUBLISHABLE_KEY !== 'pk_test_your_publishable_key_here';
 
 const Header = () => {
   const { setCurrentView, handleExportCSV } = useContext(AppContext);
@@ -45,6 +50,9 @@ const Header = () => {
               </svg>
               Add Employee
             </button>
+
+            {/* User section - show when Clerk is configured */}
+            {isClerkConfigured && <UserSection />}
           </div>
         </div>
       </div>
