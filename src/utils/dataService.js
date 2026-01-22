@@ -16,41 +16,63 @@ class DataService {
   async getAll() {
     if (this.useAPI) {
       try {
+        console.log(`[DataService] Fetching ${this.key} from API...`);
         const res = await fetch(`${API_BASE}/${this.key}`);
-        if (!res.ok) throw new Error(`API error: ${res.status}`);
+
+        if (!res.ok) {
+          console.error(`[DataService] API error for ${this.key}:`, res.status);
+          throw new Error(`API error: ${res.status}`);
+        }
+
         const data = await res.json();
+        console.log(`[DataService] Loaded ${data[this.key]?.length || 0} ${this.key} from API`);
         return data[this.key] || [];
       } catch (error) {
-        console.error(`API GET ${this.key} failed:`, error);
+        console.error(`[DataService] GET ${this.key} failed:`, error);
         // Fallback to localStorage if API fails
+        console.log(`[DataService] Falling back to localStorage for ${this.key}`);
         const data = localStorage.getItem(this.storageKey);
-        return data ? JSON.parse(data) : [];
+        const parsed = data ? JSON.parse(data) : [];
+        console.log(`[DataService] Loaded ${parsed.length} ${this.key} from localStorage fallback`);
+        return parsed;
       }
     } else {
+      console.log(`[DataService] Fetching ${this.key} from localStorage...`);
       const data = localStorage.getItem(this.storageKey);
-      return data ? JSON.parse(data) : [];
+      const parsed = data ? JSON.parse(data) : [];
+      console.log(`[DataService] Loaded ${parsed.length} ${this.key} from localStorage`);
+      return parsed;
     }
   }
 
   async save(items) {
     if (this.useAPI) {
       try {
+        console.log(`[DataService] Saving ${items.length} ${this.key} to API...`);
         const res = await fetch(`${API_BASE}/${this.key}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ [this.key]: items })
         });
-        if (!res.ok) throw new Error(`API error: ${res.status}`);
+
+        if (!res.ok) {
+          console.error(`[DataService] Save failed for ${this.key}:`, res.status);
+          throw new Error(`API error: ${res.status}`);
+        }
+
+        console.log(`[DataService] Successfully saved ${items.length} ${this.key} to Redis`);
         // Also save to localStorage as backup
         localStorage.setItem(this.storageKey, JSON.stringify(items));
         return true;
       } catch (error) {
-        console.error(`API POST ${this.key} failed:`, error);
+        console.error(`[DataService] POST ${this.key} failed:`, error);
         // Fallback to localStorage if API fails
+        console.log(`[DataService] Saving to localStorage as fallback for ${this.key}`);
         localStorage.setItem(this.storageKey, JSON.stringify(items));
         return false;
       }
     } else {
+      console.log(`[DataService] Saving ${items.length} ${this.key} to localStorage...`);
       localStorage.setItem(this.storageKey, JSON.stringify(items));
       return true;
     }
